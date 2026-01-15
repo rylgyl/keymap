@@ -5,7 +5,7 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-green.svg)](https://www.python.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS with per-application support.
+A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS.
 
 ![Keymap Demo](https://via.placeholder.com/800x400?text=Keymap+Screenshot)
 
@@ -53,7 +53,6 @@ For detailed instructions, see the [QUICKSTART.md](QUICKSTART.md) guide.
 
 - 🖱️ **Remap Mouse Buttons**: Map extra mouse buttons (4, 5, etc.) to different actions
 - ⌨️ **Custom Keystrokes**: Assign keyboard shortcuts to mouse buttons
-- 🎯 **Per-App Contexts**: Different mappings for different applications
 - 🔍 **Button Detection**: Visual interface to detect which button you're pressing
 - 🌐 **Web UI**: Easy-to-use browser-based configuration interface
 - 🔄 **Hot Reload**: Changes apply instantly without restarting
@@ -128,16 +127,6 @@ This will:
      - **Ignore**: Suppress the button press
    - Click "Save Configuration"
 
-### Per-Application Contexts
-
-1. In the "Application Context" section, click "Add New App Context"
-2. Enter the bundle ID of the app (e.g., `com.google.Chrome`)
-   - Or click "Use Current App" to use the frontmost application
-3. Configure button mappings specific to that app
-4. Save the configuration
-
-The daemon will automatically switch contexts when you switch applications.
-
 ## Configuration
 
 Configuration is stored in:
@@ -148,7 +137,7 @@ Configuration is stored in:
 Example configuration:
 ```json
 {
-  "global": {
+  "mappings": {
     "button4": {
       "type": "keystroke",
       "keys": ["cmd", "["]
@@ -156,14 +145,6 @@ Example configuration:
     "button5": {
       "type": "keystroke",
       "keys": ["cmd", "]"]
-    }
-  },
-  "apps": {
-    "com.google.Chrome": {
-      "button4": {
-        "type": "keystroke",
-        "keys": ["cmd", "["]
-      }
     }
   }
 }
@@ -217,19 +198,6 @@ rm ~/Library/LaunchAgents/com.keymap.daemon.plist
 2. The configuration should reload automatically
 3. If not, restart the daemon
 
-### Finding Bundle IDs
-
-To find an app's bundle ID:
-```bash
-osascript -e 'id of app "App Name"'
-```
-
-For example:
-```bash
-osascript -e 'id of app "Google Chrome"'
-# Output: com.google.Chrome
-```
-
 ## Development
 
 ### Running in Development Mode
@@ -257,7 +225,6 @@ keymap/
 │   ├── event_tap.py         # CGEventTap wrapper
 │   ├── event_injector.py    # Mouse/keyboard simulation
 │   ├── remapper.py          # Remapping logic
-│   ├── app_detector.py      # App context detection
 │   ├── config_manager.py    # Configuration management
 │   └── permission_checker.py # Accessibility permissions
 ├── frontend/
@@ -280,10 +247,9 @@ keymap/
 ### How It Works
 
 1. **Event Capture**: Uses macOS CGEventTap API to intercept hardware mouse events
-2. **App Detection**: Monitors frontmost application using NSWorkspace
-3. **Remapping**: When a mapped button is pressed, the original event is suppressed and a new event is injected
-4. **Configuration**: JSON-based config with hot reload via file watching
-5. **UI**: React web interface communicates with Flask backend via REST API and WebSockets
+2. **Remapping**: When a mapped button is pressed, the original event is suppressed and a new event is injected
+3. **Configuration**: JSON-based config with hot reload via file watching
+4. **UI**: React web interface communicates with Flask backend via REST API and WebSockets
 
 ### Supported Actions
 

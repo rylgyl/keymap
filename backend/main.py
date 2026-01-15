@@ -20,7 +20,6 @@ print("Loading keymap modules...", flush=True)
 # Import our modules
 from permission_checker import PermissionChecker
 from config_manager import ConfigManager
-from app_detector import AppDetector
 from event_injector import EventInjector
 from event_tap import EventTap
 from remapper import Remapper
@@ -39,11 +38,9 @@ print("Flask app initialized", flush=True)
 print("Initializing components...", flush=True)
 config_manager = ConfigManager()
 print("  - ConfigManager OK", flush=True)
-app_detector = AppDetector()
-print("  - AppDetector OK", flush=True)
 event_injector = EventInjector()
 print("  - EventInjector OK", flush=True)
-remapper = Remapper(config_manager, app_detector, event_injector)
+remapper = Remapper(config_manager, event_injector)
 print("  - Remapper OK", flush=True)
 event_tap = EventTap(remapper)
 print("  - EventTap OK", flush=True)
@@ -93,36 +90,13 @@ def save_config():
         return jsonify({'success': False, 'error': str(e)}), 400
 
 
-@app.route('/api/apps', methods=['GET'])
-def get_apps():
-    """Get information about detected apps"""
-    current_app_info = app_detector.get_frontmost_app()
-
-    # Get list of apps from config
-    config = config_manager.get_config()
-    configured_apps = list(config.get('apps', {}).keys())
-
-    return jsonify({
-        'current': current_app_info,
-        'configured': configured_apps
-    })
-
-
-@app.route('/api/context', methods=['GET'])
-def get_context():
-    """Get current remapping context"""
-    context = remapper.get_current_context()
-    return jsonify(context)
-
-
 @app.route('/api/status', methods=['GET'])
 def get_status():
     """Get overall system status"""
     return jsonify({
         'event_tap_running': event_tap.is_running(),
         'detection_mode': event_tap.detection_mode,
-        'permissions_granted': permission_checker.is_trusted(),
-        'current_app': app_detector.get_frontmost_app()
+        'permissions_granted': permission_checker.is_trusted()
     })
 
 
@@ -187,18 +161,6 @@ def on_button_detected(button_info):
 event_tap.on_button_detected(on_button_detected)
 
 
-# App change callback
-def on_app_change(old_bundle_id, new_bundle_id):
-    """Called when the frontmost app changes"""
-    app_info = app_detector.get_frontmost_app()
-    print(f"App changed: {old_bundle_id} -> {new_bundle_id}")
-    socketio.emit('app_changed', app_info)
-
-
-# Register the app change callback
-app_detector.on_app_change(on_app_change)
-
-
 # =============================================================================
 # Startup & Initialization
 # =============================================================================
@@ -216,10 +178,6 @@ def initialize():
     else:
         print("Accessibility permissions OK")
 
-    # Start monitoring apps
-    print("Starting app detector...")
-    app_detector.start_monitoring()
-
     # Start watching config
     print("Starting config watcher...")
     config_manager.start_watching()
@@ -236,7 +194,6 @@ def shutdown():
     """Clean shutdown"""
     print("Shutting down...")
     event_tap.stop()
-    app_detector.stop_monitoring()
     config_manager.stop_watching()
     print("Shutdown complete")
 

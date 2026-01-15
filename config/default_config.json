@@ -1,5 +1,5 @@
 {
-  "global": {
+  "mappings": {
     "button4": {
       "type": "keystroke",
       "keys": ["cmd", "["]
@@ -7,18 +7,6 @@
     "button5": {
       "type": "keystroke",
       "keys": ["cmd", "]"]
-    }
-  },
-  "apps": {
-    "com.google.Chrome": {
-      "button4": {
-        "type": "keystroke",
-        "keys": ["cmd", "["]
-      },
-      "button5": {
-        "type": "keystroke",
-        "keys": ["cmd", "]"]
-      }
     }
   }
 }

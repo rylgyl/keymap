@@ -89,7 +89,7 @@ After pushing, configure your repository on GitHub:
    - Settings → Features → Check "Discussions"
 
 3. **Set Repository Description**:
-   - "A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS with per-application support"
+   - "A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS"
 
 4. **Add Website** (if you have one):
    - Settings → About → Website URL
@@ -111,7 +111,6 @@ Then on GitHub:
    ```markdown
    ## Features
    - Remap mouse buttons to clicks, keystrokes, or ignore
-   - Per-application context support
    - Web-based configuration UI
    - Button detection mode
    - Hot reload configuration

@@ -67,31 +67,6 @@ Map button 4 and 5 to browser back/forward:
 Map button 4 to middle click (great for opening links in new tabs):
 - **Button 4** → Mouse Click: Middle
 
-### Per-App Context
-Configure different mappings for Chrome vs Terminal:
-
-1. Click **"Add New App Context"**
-2. Enter `com.google.Chrome` (or click "Use Current App" while Chrome is open)
-3. Configure buttons specifically for Chrome
-4. Switch back to "Global (All Apps)" to set default mappings
-
-The app will automatically use Chrome-specific mappings when Chrome is active!
-
-## Common Bundle IDs
-
-- **Chrome**: `com.google.Chrome`
-- **Safari**: `com.apple.Safari`
-- **Firefox**: `org.mozilla.firefox`
-- **Terminal**: `com.apple.Terminal`
-- **Visual Studio Code**: `com.microsoft.VSCode`
-- **Finder**: `com.apple.finder`
-- **Slack**: `com.tinyspeck.slackmacgap`
-
-To find any app's bundle ID:
-```bash
-osascript -e 'id of app "App Name"'
-```
-
 ## Stopping the Application
 
 Press `Ctrl+C` in the terminal where you ran `./run.sh`
@@ -109,8 +84,7 @@ Press `Ctrl+C` in the terminal where you ran `./run.sh`
 
 ## What's Next?
 
-- Try creating per-app contexts for your most-used applications
 - Experiment with keyboard shortcuts to boost productivity
 - Check out the full README.md for advanced features
 
-Enjoy your custom button mappings! 🖱️⌨️
+Enjoy your custom button mappings!

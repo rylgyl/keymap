@@ -1,22 +1,18 @@
 import { useState, useEffect } from 'react'
 import KeystrokeDetector from './KeystrokeDetector'
 
-function ConfigPanel({ config, currentContext, onSave, socket }) {
+function ConfigPanel({ config, onSave, socket }) {
   const [mappings, setMappings] = useState({})
   const [editingButton, setEditingButton] = useState(null)
   const [detecting, setDetecting] = useState(false)
   const [detectingKeystroke, setDetectingKeystroke] = useState(null) // Track which button is detecting keystroke
 
   useEffect(() => {
-    // Load mappings for current context
+    // Load mappings from config
     if (config) {
-      if (currentContext === 'global') {
-        setMappings(config.global || {})
-      } else {
-        setMappings(config.apps?.[currentContext] || {})
-      }
+      setMappings(config.mappings || {})
     }
-  }, [config, currentContext])
+  }, [config])
 
   useEffect(() => {
     if (!socket) return
@@ -79,12 +75,8 @@ function ConfigPanel({ config, currentContext, onSave, socket }) {
   }
 
   const handleSave = () => {
-    const newConfig = { ...config }
-    if (currentContext === 'global') {
-      newConfig.global = mappings
-    } else {
-      if (!newConfig.apps) newConfig.apps = {}
-      newConfig.apps[currentContext] = mappings
+    const newConfig = {
+      mappings: mappings
     }
     onSave(newConfig)
     alert('Configuration saved!')
@@ -116,9 +108,6 @@ function ConfigPanel({ config, currentContext, onSave, socket }) {
   return (
     <div className="card">
       <h2 style={{ marginBottom: '16px' }}>Button Mappings</h2>
-      <p style={{ color: '#6e6e73', marginBottom: '16px', fontSize: '14px' }}>
-        Configuring for: <strong>{currentContext === 'global' ? 'All Apps' : currentContext}</strong>
-      </p>
 
       {/* Add New Mapping */}
       <div style={{ marginBottom: '20px' }}>

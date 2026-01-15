@@ -35,18 +35,6 @@ export const api = {
     return response.json();
   },
 
-  // Apps
-  async getApps() {
-    const response = await fetch(`${API_BASE}/apps`);
-    return response.json();
-  },
-
-  // Context
-  async getContext() {
-    const response = await fetch(`${API_BASE}/context`);
-    return response.json();
-  },
-
   // Status
   async getStatus() {
     const response = await fetch(`${API_BASE}/status`);

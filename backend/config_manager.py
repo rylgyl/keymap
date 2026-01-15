@@ -13,12 +13,9 @@ class ConfigManager:
     """Manage button remapping configuration"""
 
     DEFAULT_CONFIG = {
-        "global": {
+        "mappings": {
             # Example: "button4": {"type": "click", "button": "middle"}
             # Example: "button5": {"type": "keystroke", "keys": ["cmd", "["]}
-        },
-        "apps": {
-            # Example: "com.google.Chrome": {"button4": {"type": "keystroke", "keys": ["cmd", "["]}}
         }
     }
 
@@ -101,27 +98,19 @@ class ConfigManager:
         with self.lock:
             return self.config.copy()
 
-    def get_mapping(self, button, bundle_id=None):
+    def get_mapping(self, button):
         """
-        Get the mapping for a specific button and app context
+        Get the mapping for a specific button
 
         Args:
             button (str): Button identifier (e.g., 'button4')
-            bundle_id (str): App bundle ID. If None, uses global config
 
         Returns:
             dict: Mapping configuration or None
         """
         with self.lock:
-            # Check app-specific mapping first
-            if bundle_id and bundle_id in self.config.get('apps', {}):
-                app_config = self.config['apps'][bundle_id]
-                if button in app_config:
-                    return app_config[button]
-
-            # Fall back to global mapping
-            global_config = self.config.get('global', {})
-            return global_config.get(button)
+            mappings = self.config.get('mappings', {})
+            return mappings.get(button)
 
     def on_change(self, callback):
         """
@@ -184,14 +173,9 @@ if __name__ == '__main__':
 
     # Test saving
     test_config = {
-        "global": {
+        "mappings": {
             "button4": {"type": "click", "button": "middle"},
             "button5": {"type": "keystroke", "keys": ["cmd", "["]}
-        },
-        "apps": {
-            "com.google.Chrome": {
-                "button4": {"type": "keystroke", "keys": ["cmd", "["]}
-            }
         }
     }
     manager.save(test_config)
@@ -202,11 +186,11 @@ if __name__ == '__main__':
     print(json.dumps(manager2.get_config(), indent=2))
 
     # Test get_mapping
-    print("\nGlobal button4 mapping:")
+    print("\nbutton4 mapping:")
     print(manager2.get_mapping('button4'))
 
-    print("\nChrome button4 mapping:")
-    print(manager2.get_mapping('button4', 'com.google.Chrome'))
+    print("\nbutton5 mapping:")
+    print(manager2.get_mapping('button5'))
 
     # Cleanup
     config_path.unlink()

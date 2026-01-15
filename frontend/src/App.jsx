@@ -3,14 +3,11 @@ import { io } from 'socket.io-client'
 import { api } from './api/client'
 import ConfigPanel from './components/ConfigPanel'
 import ButtonDetector from './components/ButtonDetector'
-import AppSelector from './components/AppSelector'
 
 function App() {
   const [socket, setSocket] = useState(null)
   const [permissions, setPermissions] = useState(null)
   const [config, setConfig] = useState(null)
-  const [currentContext, setCurrentContext] = useState('global')
-  const [apps, setApps] = useState({ current: null, configured: [] })
   const [status, setStatus] = useState(null)
 
   // Initialize socket connection
@@ -22,11 +19,6 @@ function App() {
       console.log('Connected to server')
     })
 
-    newSocket.on('app_changed', (appInfo) => {
-      console.log('App changed:', appInfo)
-      loadApps()
-    })
-
     return () => newSocket.close()
   }, [])
 
@@ -34,7 +26,6 @@ function App() {
   useEffect(() => {
     loadPermissions()
     loadConfig()
-    loadApps()
     loadStatus()
 
     // Poll status every 5 seconds
@@ -57,15 +48,6 @@ function App() {
       setConfig(data)
     } catch (error) {
       console.error('Failed to load config:', error)
-    }
-  }
-
-  const loadApps = async () => {
-    try {
-      const data = await api.getApps()
-      setApps(data)
-    } catch (error) {
-      console.error('Failed to load apps:', error)
     }
   }
 
@@ -136,15 +118,10 @@ function App() {
             Permissions: {permissions.granted ? 'Granted' : 'Not Granted'}
           </div>
           {status && (
-            <>
-              <div>
-                <span className={`status-indicator ${status.event_tap_running ? 'active' : 'inactive'}`} />
-                Event Tap: {status.event_tap_running ? 'Running' : 'Stopped'}
-              </div>
-              <div>
-                Current App: {status.current_app?.name || 'Unknown'} ({status.current_app?.bundle_id || 'N/A'})
-              </div>
-            </>
+            <div>
+              <span className={`status-indicator ${status.event_tap_running ? 'active' : 'inactive'}`} />
+              Event Tap: {status.event_tap_running ? 'Running' : 'Stopped'}
+            </div>
           )}
         </div>
       </div>
@@ -154,18 +131,9 @@ function App() {
           {/* Button Detector */}
           <ButtonDetector socket={socket} />
 
-          {/* App Selector */}
-          <AppSelector
-            apps={apps}
-            config={config}
-            currentContext={currentContext}
-            onContextChange={setCurrentContext}
-          />
-
           {/* Config Panel */}
           <ConfigPanel
             config={config}
-            currentContext={currentContext}
             onSave={handleSaveConfig}
             socket={socket}
           />

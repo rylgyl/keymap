@@ -7,9 +7,7 @@
 
 A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS.
 
-![Keymap Demo](https://via.placeholder.com/800x400?text=Keymap+Screenshot)
-
-> **Note:** Replace the placeholder screenshot above with an actual screenshot of your application before publishing.
+![Keymap Screenshot](screenshot.png)
 
 ## Table of Contents
 

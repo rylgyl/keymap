@@ -67,13 +67,13 @@ launchctl stop com.keymap.daemon
 
 ### Uninstall Auto-Start
 ```bash
-cd /Users/anujgoyal/Desktop/Coding/keymap
+cd keymap
 ./uninstall.sh
 ```
 
 ### Reinstall Auto-Start
 ```bash
-cd /Users/anujgoyal/Desktop/Coding/keymap
+cd keymap
 ./install.sh
 ```
 

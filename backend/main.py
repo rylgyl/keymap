@@ -30,8 +30,9 @@ print("All modules loaded successfully!", flush=True)
 # Initialize Flask app
 print("Initializing Flask app...", flush=True)
 app = Flask(__name__, static_folder='../frontend/dist', static_url_path='')
-CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+# Only allow CORS from localhost for security
+CORS(app, origins=["http://localhost:*", "http://127.0.0.1:*"])
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:*", "http://127.0.0.1:*"], async_mode='threading')
 print("Flask app initialized", flush=True)
 
 # Initialize components

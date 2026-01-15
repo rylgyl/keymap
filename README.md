@@ -1,6 +1,53 @@
 # Keymap - Mouse & Keyboard Remapper for macOS
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform: macOS](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)](https://www.apple.com/macos/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-green.svg)](https://www.python.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS with per-application support.
+
+![Keymap Demo](https://via.placeholder.com/800x400?text=Keymap+Screenshot)
+
+> **Note:** Replace the placeholder screenshot above with an actual screenshot of your application before publishing.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Auto-Start on Login](#auto-start-on-login-optional)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/keymap.git
+cd keymap
+
+# Install dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Build frontend
+cd frontend && npm install && npm run build && cd ..
+
+# Make script executable and run
+chmod +x run.sh
+./run.sh
+```
+
+Open http://localhost:8080 in your browser and grant accessibility permissions when prompted.
+
+For detailed instructions, see the [QUICKSTART.md](QUICKSTART.md) guide.
 
 ## Features
 
@@ -21,12 +68,16 @@ A simple, powerful tool to remap mouse buttons and keyboard shortcuts on macOS w
 
 ### 1. Clone or Download
 
-The project is already in `/Users/anujgoyal/Desktop/Coding/keymap`
+```bash
+git clone https://github.com/YOUR_USERNAME/keymap.git
+cd keymap
+```
+
+Or download and extract the ZIP file, then navigate to the directory.
 
 ### 2. Install Backend Dependencies
 
 ```bash
-cd /Users/anujgoyal/Desktop/Coding/keymap
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -246,9 +297,23 @@ keymap/
 - Cannot remap keyboard keys that are already system shortcuts
 - Some apps may not respond to injected events (security feature)
 
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on:
+- Reporting bugs
+- Suggesting features
+- Submitting pull requests
+- Development setup
+
 ## License
 
-This is a personal tool. Use and modify as you wish.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- **Issues**: Found a bug? [Open an issue](https://github.com/YOUR_USERNAME/keymap/issues)
+- **Feature Requests**: Have an idea? [Request a feature](https://github.com/YOUR_USERNAME/keymap/issues/new?template=feature_request.md)
+- **Questions**: Check existing [issues](https://github.com/YOUR_USERNAME/keymap/issues) or open a new one
 
 ## Credits
 

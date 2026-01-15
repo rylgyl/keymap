@@ -4,7 +4,7 @@
 
 1. Open Terminal and navigate to the keymap directory:
    ```bash
-   cd /Users/anujgoyal/Desktop/Coding/keymap
+   cd keymap
    ```
 
 2. Run the startup script:

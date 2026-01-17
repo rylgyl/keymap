@@ -74,21 +74,25 @@ class EventTap:
             position = CGEventGetLocation(event)
 
             # Only process button down events
-            if event_type == kCGEventOtherMouseDown:
-                # In detection mode, notify listeners instead of remapping
-                if self.detection_mode:
-                    for callback in self.detection_callbacks:
-                        try:
-                            callback({
-                                'button': button_number,
-                                'position': (position.x, position.y)
-                            })
-                        except Exception as e:
-                            print(f"Error in detection callback: {e}")
-                    # Suppress the event in detection mode
+            is_button_down = event_type in (kCGEventOtherMouseDown, kCGEventLeftMouseDown, kCGEventRightMouseDown)
+            is_other_button = event_type == kCGEventOtherMouseDown
+
+            if is_button_down and self.detection_mode:
+                # In detection mode, notify listeners about ALL buttons
+                for callback in self.detection_callbacks:
+                    try:
+                        callback({
+                            'button': button_number,
+                            'position': (position.x, position.y)
+                        })
+                    except Exception as e:
+                        print(f"Error in detection callback: {e}")
+                # Only suppress "other" mouse buttons (4, 5, etc.) - let left/right clicks through
+                if is_other_button:
                     return None
 
-                # Normal remapping mode
+            # Normal remapping mode (only for other mouse buttons)
+            if is_other_button and not self.detection_mode:
                 if self.remapper:
                     # Check if this button should be remapped
                     if self.remapper.should_remap(button_number):

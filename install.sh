@@ -27,6 +27,15 @@ echo "Creating LaunchAgent plist at:"
 echo "$PLIST_PATH"
 echo ""
 
+# Resolve the real Python binary (venv symlink -> homebrew python)
+PYTHON_BIN=$(readlink -f "$KEYMAP_DIR/venv/bin/python3" 2>/dev/null || readlink "$KEYMAP_DIR/venv/bin/python3" 2>/dev/null || echo "$KEYMAP_DIR/venv/bin/python3")
+PYTHON_VERSION=$(basename "$(dirname "$(dirname "$PYTHON_BIN")")" 2>/dev/null || python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+SITE_PACKAGES="$KEYMAP_DIR/venv/lib/$PYTHON_VERSION/site-packages"
+
+echo "Python binary: $PYTHON_BIN"
+echo "Site packages: $SITE_PACKAGES"
+echo ""
+
 cat > "$PLIST_PATH" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -37,9 +46,17 @@ cat > "$PLIST_PATH" << EOF
 
     <key>ProgramArguments</key>
     <array>
-        <string>$KEYMAP_DIR/venv/bin/python</string>
+        <string>$PYTHON_BIN</string>
         <string>$KEYMAP_DIR/backend/main.py</string>
     </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>$SITE_PACKAGES</string>
+        <key>PYTHONNOUSERSITE</key>
+        <string>1</string>
+    </dict>
 
     <key>WorkingDirectory</key>
     <string>$KEYMAP_DIR</string>
@@ -49,6 +66,9 @@ cat > "$PLIST_PATH" << EOF
 
     <key>KeepAlive</key>
     <true/>
+
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
 
     <key>StandardOutPath</key>
     <string>$HOME/Library/Logs/keymap.log</string>
@@ -61,6 +81,23 @@ EOF
 
 echo "✓ LaunchAgent plist created"
 echo ""
+
+# Copy frontend dist to Application Support
+# (macOS TCC blocks LaunchAgent from reading ~/Desktop files directly)
+DIST_SRC="$KEYMAP_DIR/frontend/dist"
+DIST_DEST="$HOME/Library/Application Support/keymap/dist"
+
+if [ -d "$DIST_SRC" ]; then
+    echo "Copying frontend to Application Support..."
+    mkdir -p "$HOME/Library/Application Support/keymap"
+    rm -rf "$DIST_DEST"
+    cp -r "$DIST_SRC" "$DIST_DEST"
+    echo "✓ Frontend copied to Application Support"
+    echo ""
+else
+    echo "⚠ Warning: frontend/dist not found. Run 'cd frontend && npm run build' first."
+    echo ""
+fi
 
 # Load the LaunchAgent
 echo "Loading LaunchAgent..."

@@ -5,16 +5,21 @@ Provides REST API and WebSocket interface for configuration
 """
 import sys
 import os
+from pathlib import Path
 
 # Ensure unbuffered output
 sys.stdout.reconfigure(line_buffering=True) if hasattr(sys.stdout, 'reconfigure') else None
 sys.stderr.reconfigure(line_buffering=True) if hasattr(sys.stderr, 'reconfigure') else None
 
+# Static files are served from Application Support (copied there by install.sh)
+# because macOS TCC blocks LaunchAgent file reads from ~/Desktop
+_APP_SUPPORT = Path.home() / 'Library' / 'Application Support' / 'keymap'
+_STATIC_DEST = _APP_SUPPORT / 'dist'
+
 print("Loading Flask modules...", flush=True)
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-from pathlib import Path
 
 print("Loading keymap modules...", flush=True)
 # Import our modules
@@ -28,7 +33,7 @@ print("All modules loaded successfully!", flush=True)
 
 # Initialize Flask app
 print("Initializing Flask app...", flush=True)
-app = Flask(__name__, static_folder='../frontend/dist', static_url_path='')
+app = Flask(__name__, static_folder=str(_STATIC_DEST), static_url_path='')
 # Only allow CORS from localhost for security
 CORS(app, origins=["http://localhost:8080", "http://127.0.0.1:8080"])
 socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "http://127.0.0.1:8080"], async_mode='threading')

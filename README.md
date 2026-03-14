@@ -148,26 +148,41 @@ Example configuration:
 }
 ```
 
-## Auto-Start on Login (Optional)
+## Auto-Start on Login
 
-To have Keymap start automatically when you log in:
+Run the install script to set up the daemon to start automatically on login:
 
-1. Edit `config/com.keymap.daemon.plist` and replace `YOUR_USERNAME` with your actual username
-
-2. Copy the plist to LaunchAgents:
 ```bash
-cp config/com.keymap.daemon.plist ~/Library/LaunchAgents/
+./install.sh
 ```
 
-3. Load the agent:
+This will:
+1. Copy the frontend to `~/Library/Application Support/keymap/dist/` (required — see note below)
+2. Create a LaunchAgent plist at `~/Library/LaunchAgents/com.keymap.daemon.plist`
+3. Load and start the daemon
+
+> **Why Application Support?** macOS restricts background processes (LaunchAgents) from reading files in `~/Desktop`. The install script copies the frontend to `~/Library/Application Support/keymap/` where the daemon can serve it freely. If you rebuild the frontend, re-run `./install.sh` to sync the new files.
+
+To check daemon status:
 ```bash
-launchctl load ~/Library/LaunchAgents/com.keymap.daemon.plist
+launchctl list | grep keymap
+curl http://localhost:8080/api/status
 ```
 
-To stop auto-start:
+To restart the daemon:
 ```bash
-launchctl unload ~/Library/LaunchAgents/com.keymap.daemon.plist
-rm ~/Library/LaunchAgents/com.keymap.daemon.plist
+launchctl kickstart -k gui/$(id -u)/com.keymap.daemon
+```
+
+To view logs:
+```bash
+tail -f ~/Library/Logs/keymap.log
+tail -f ~/Library/Logs/keymap.error.log
+```
+
+To uninstall auto-start:
+```bash
+./uninstall.sh
 ```
 
 ## Troubleshooting

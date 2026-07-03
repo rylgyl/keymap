@@ -29,7 +29,7 @@ echo ""
 
 # Resolve the real Python binary (venv symlink -> homebrew python)
 PYTHON_BIN=$(readlink -f "$KEYMAP_DIR/venv/bin/python3" 2>/dev/null || readlink "$KEYMAP_DIR/venv/bin/python3" 2>/dev/null || echo "$KEYMAP_DIR/venv/bin/python3")
-PYTHON_VERSION=$(basename "$(dirname "$(dirname "$PYTHON_BIN")")" 2>/dev/null || python3 -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_VERSION=$("$PYTHON_BIN" -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "python3.13")
 SITE_PACKAGES="$KEYMAP_DIR/venv/lib/$PYTHON_VERSION/site-packages"
 
 echo "Python binary: $PYTHON_BIN"
